@@ -4,7 +4,7 @@ const app = express();
 // creating route handler 
 
 app.get('/',(req,res) =>{
-    res.send({ hi : 'there'});
+    res.send({ bye : 'here'});
 })
 
 // the port that heroku gives us in production mode
