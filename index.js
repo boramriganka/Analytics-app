@@ -7,4 +7,9 @@ app.get('/',(req,res) =>{
     res.send({ hi : 'there'});
 })
 
-app.listen(5000);
+// the port that heroku gives us in production mode
+// in dev mode, it doesn't give port so the or statement
+
+// dynamic port binding
+const PORT = process.env.PORT || 5000
+app.listen(PORT);
