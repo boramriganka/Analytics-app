@@ -1,0 +1,9 @@
+// we will not use require to import mongoose model, because
+// later in testing with mocha,jasmine , we will use require 
+// statment multiple times, so it will give an error saying 
+// that model has been imported already
+
+// google profile id vs user model id
+// google profile id identifies a user coming to us from the oauth flow
+// user model instance id identifies a user who is stored in the database
+// oath only purpose is to allow someone to sign it.After that,we use our own internal id

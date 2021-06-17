@@ -1,15 +1,44 @@
 const express = require('express')
-const app = express();
+const mongoose = require('mongoose')
+const authRoutes = require('./routes/authRoutes')
+const cookieSession = require('cookie-session')
+const passport = require('passport')
+const keys = require('./config/keys')
+//1st import the User model , then execute passport.js
 
-// creating route handler 
+require('./models/User')
+require('./services/passport')
 
-app.get('/',(req,res) =>{
-    res.send({ bye : 'here'});
-})
+mongoose.connect(keys.mongoURI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+});
 
-// the port that heroku gives us in production mode
-// in dev mode, it doesn't give port so the or statement
+const app = express()
 
-// dynamic port binding
-const PORT = process.env.PORT || 5000
-app.listen(PORT);
+// express can't handle cookies, we will use cookie-session module
+// cookies configuration - use authentication
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey]
+  })
+)
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+
+// linking the routes to app
+authRoutes(app)
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT)
+
+
+// alternate way:
+// require ('./services/passport')
+// require('./routes/authRoutes)(app)
