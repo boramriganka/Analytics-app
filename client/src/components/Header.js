@@ -19,7 +19,11 @@ class Header extends Component {
         
         return (
             <nav>
-                <div className="nav-wrapper">
+                <div className="nav-wrapper"
+                 style={{
+                     background:"#060b26",
+                     padding : "0 1.5rem",
+                     }}>
                     <Link
                     to={this.props.auth ?'/xorai':'/'} 
                     className=" left brand-logo"
@@ -31,7 +35,7 @@ class Header extends Component {
                                {this.renderContent()}
                       </ul>
                       <ul>
-                          <Link to="/analytics" className="center">
+                          <Link to="/analytics" className="right">
                               Analytics
                           </Link>
                       </ul>

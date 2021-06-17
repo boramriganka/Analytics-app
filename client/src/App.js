@@ -9,6 +9,7 @@ import * as actions from './actions'
 import Landing from './components/Landing'
 import Main from './components/Main/dashboard/Main'
 import Analytics from './components/Analytics'
+import Navbar from './components/Nav/Navbar'
 
 const Dashboard = () => <> <Main/></>
 const SurveyNew = () => <h2>SurveyNew</h2>
@@ -20,10 +21,10 @@ class App extends Component{
     }
     render(){
         return(
-            <div className="container">
+            <div >
             <BrowserRouter>
                 <div>
-                    <Header />
+                    <Navbar/>
                     <Route exact path="/" component={Landing} />
                     <Route exact path="/xorai" component={Dashboard} />
                     <Route exact path="/xorai/new" component={SurveyNew} />
