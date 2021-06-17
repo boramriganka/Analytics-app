@@ -35,7 +35,7 @@ class Header extends Component {
                                {this.renderContent()}
                       </ul>
                       <ul>
-                          <Link to="/analytics" className="right">
+                          <Link to="/xorai/analytics" className="right">
                               Analytics
                           </Link>
                       </ul>
