@@ -7,7 +7,6 @@ import Header from './components/Header'
 import {connect} from "react-redux";
 import * as actions from './actions'
 import Landing from './components/Landing'
-import Main from './components/Main/dashboard/Main'
 import Analytics from './components/Analytics'
 import Navbar from './components/Nav/Navbar'
 import Chart from './components/Main/dashboard/Chart'
