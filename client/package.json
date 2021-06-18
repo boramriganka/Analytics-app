@@ -48,6 +48,20 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^2.0.0"
+    "http-proxy-middleware": "^2.0.0",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "bootstrap": "^5.0.0-alpha1",
+    "bootstrap-loader": "^3.0.4",
+    "css-loader": "^3.6.0",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
+    "style-loader": "^1.2.1",
+    "tether": "^1.4.7",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   }
 }
