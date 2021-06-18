@@ -10,8 +10,9 @@ import Landing from './components/Landing'
 import Main from './components/Main/dashboard/Main'
 import Analytics from './components/Analytics'
 import Navbar from './components/Nav/Navbar'
+import Chart from './components/Main/dashboard/Chart'
 
-const Dashboard = () => <> <Main/></>
+const Dashboard = () => <> <Chart/></>
 const SurveyNew = () => <h2>SurveyNew</h2>
 
 class App extends Component{
