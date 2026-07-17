@@ -17,6 +17,18 @@ export class ApiError extends Error {
 }
 
 export async function api(path, { method = 'GET', body } = {}) {
+  // Static demo mode: a host page can bake API responses into
+  // window.__XORAI_DATA__ and run the whole app without a server.
+  const staticData = typeof window !== 'undefined' && window.__XORAI_DATA__;
+  if (staticData) {
+    if (path.startsWith('/auth/')) {
+      return { token: 'static-demo', user: staticData.user };
+    }
+    const hit = staticData.responses[path];
+    if (hit) return structuredClone(hit);
+    throw new ApiError('Not available in the static demo', 404);
+  }
+
   const headers = { 'Content-Type': 'application/json' };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;

@@ -4,3 +4,4 @@ server/data/
 .env
 *.local
 .DS_Store
+dist-static/
