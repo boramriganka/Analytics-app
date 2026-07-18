@@ -73,7 +73,7 @@ export default function AppShell() {
 
       {/* Desktop sidebar */}
       <aside
-        className="fixed inset-y-0 left-0 z-30 hidden w-52 flex-col border-r border-line bg-paper lg:flex"
+        className="fixed inset-y-0 left-0 z-30 hidden w-52 flex-col border-r border-line bg-paper print:hidden lg:flex"
         aria-label="Primary"
       >
         <Link to="/" className="flex h-14 items-center gap-2 px-4 font-semibold tracking-tight text-ink">
@@ -127,7 +127,7 @@ export default function AppShell() {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-line bg-paper/95 px-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-line bg-paper/95 px-3 backdrop-blur print:hidden lg:hidden">
         <Link to="/" className="flex items-center gap-2 font-semibold text-ink">
           <Logo /> Signalroom
         </Link>
@@ -139,13 +139,13 @@ export default function AppShell() {
       </header>
 
       {/* Main canvas */}
-      <main id="main" className="min-w-0 pb-20 lg:ml-52 lg:pb-0">
+      <main id="main" className="min-w-0 pb-20 print:pb-0 lg:ml-52 lg:pb-0 print:lg:ml-0">
         <Outlet />
       </main>
 
       {/* Mobile bottom navigation */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-panel pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-panel pb-[env(safe-area-inset-bottom)] print:hidden lg:hidden"
         aria-label="Primary"
       >
         {MOBILE_NAV.map(({ to, label, icon: Icon }) => (

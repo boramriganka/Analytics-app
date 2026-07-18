@@ -16,7 +16,33 @@ Honest, stage-by-stage record of what is complete, partial, or deferred.
 - Legacy prototype and interim Xorai code fully removed (no localhost:5050, no config/keys.js, no dead Redux, no CSS-framework pileup).
 - Gates: `npm install && npm run seed && npm run dev` works; `npm test` → 39 passing; `npm run typecheck` clean; ESLint clean.
 
-## Stage 2 — Vertical slice (in progress)
+## Stage 2 — Vertical slice ✅
+The exact journey works end to end and was driven in a real browser (Playwright)
+with zero console errors: open demo → overview → change date range (URL-persisted)
+→ inspect a KPI (definition, plain-language sentence, contributing products
+sorted by delta) → open the product view → save the view → add Revenue Pulse to
+a new report → open the report → add a note → export via print stylesheet.
+
+- Executive overview: all 9 KPIs with current/comparison/absolute/% change,
+  trend sparks, definition tooltips, plain-language copy; delta color follows
+  metric direction (a rising refund rate is bad).
+- **Revenue Pulse v1** (hand-built SVG): net-sales series, neutral
+  comparison-period band, robust-anomaly rings, pointer/touch scrubbing with a
+  stable tooltip, arrow-key scrubbing when focused, direct end label,
+  width-adaptive axis labels.
+- Deterministic insights render on Overview with severity + observation/
+  hypothesis chips and links to the supporting filtered view.
+- One filter system: date presets + custom range, comparison mode, dimension
+  filters with searchable values, active-filter chips, reset, URL persistence,
+  mobile bottom sheet; saved views (create/apply/delete).
+- Reports: list/create/delete; editor with heading/note (inline edit),
+  KPI/chart/insight blocks that re-query live data from their captured filter
+  query, reorder, delete; print-quality export via print stylesheet.
+- Every chart ships with an accessible summary, a data-table alternative and
+  CSV export. Fixed en route: nested-button violation in KPI tiles (stretched
+  sibling button pattern), x-label collisions at 390px, and a customer model
+  rewrite (explicit first purchases → ~30% new customers per window instead of
+  a closed pool showing 98.7% repeat rate).
 ## Stage 3 — Import journey (pending)
 ## Stage 4 — Remaining analytics (pending)
 ## Stage 5 — Public product experience (pending)

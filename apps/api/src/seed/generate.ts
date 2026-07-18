@@ -120,8 +120,11 @@ export function generateDataset(size: SeedSize, endDate = new Date()): SeedTrans
   const end = Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate());
   const totalDays = Math.round(months * 30.44);
 
-  // customers with a repeat-heavy core
-  const nCustomers = Math.max(60, Math.round(dailyOrders * 45));
+  // Customer model with explicit first purchases: ~30% of orders go to a
+  // customer buying for the first time, so any analysis window sees a
+  // realistic new-vs-returning split instead of a closed customer pool.
+  const NEW_CUSTOMER_ORDER_SHARE = 0.3;
+  const nCustomers = Math.max(150, Math.round(dailyOrders * totalDays * 0.35));
   const customers = Array.from({ length: nCustomers }, (_, i) => {
     const name = `${pick(FIRST)} ${pick(LAST)}`;
     const r = rand();
@@ -129,13 +132,27 @@ export function generateDataset(size: SeedSize, endDate = new Date()): SeedTrans
     return {
       id: `C-${String(i + 1).padStart(5, '0')}`,
       name,
-      // 20% loyal core places most repeat orders
-      weight: r < 0.2 ? between(3, 9) : between(0.4, 1.6),
-      firstDay: Math.floor(Math.pow(rand(), 0.7) * totalDays), // days from start
+      // 15% become loyal repeaters once activated; the rest buy occasionally
+      weight: r < 0.15 ? between(4, 10) : between(0.3, 1.2),
       country,
     };
   });
-  const customerWeightTotal = customers.reduce((a, c) => a + c.weight, 0);
+  const MAX_WEIGHT = 10;
+  let activated = 0; // customers[0..activated) have made their first purchase
+
+  /** First purchase for the next never-seen customer. */
+  function activateCustomer() {
+    return customers[Math.min(activated++, nCustomers - 1)]!;
+  }
+  /** Weighted rejection-sample among customers who have purchased before. */
+  function pickReturningCustomer() {
+    if (activated === 0) return activateCustomer();
+    for (let tries = 0; tries < 50; tries++) {
+      const c = customers[Math.floor(rand() * activated)]!;
+      if (rand() < c.weight / MAX_WEIGHT) return c;
+    }
+    return customers[Math.floor(rand() * activated)]!;
+  }
 
   function countryFor(r: number): string {
     let acc = 0;
@@ -205,19 +222,9 @@ export function generateDataset(size: SeedSize, endDate = new Date()): SeedTrans
       const channel = chRoll < mpShare ? 'marketplace' : chRoll < mpShare + 0.38 ? 'store' : 'online';
       const store = channel === 'store' ? pick(STORES) : null;
 
-      // customer: sampled by weight among those who exist by this day
-      let cust = customers[Math.floor(rand() * customers.length)]!;
-      for (let tries = 0; tries < 8; tries++) {
-        let r = rand() * customerWeightTotal;
-        for (const c of customers) {
-          r -= c.weight;
-          if (r <= 0) {
-            cust = c;
-            break;
-          }
-        }
-        if (cust.firstDay <= totalDays - dayOffset) break;
-      }
+      // ~30% of orders are a customer's first purchase
+      const cust =
+        rand() < NEW_CUSTOMER_ORDER_SHARE && activated < nCustomers ? activateCustomer() : pickReturningCustomer();
 
       const hour = pickHour(rand, dow);
       const ts = new Date(dayMs + hour * 3_600_000 + Math.floor(rand() * 3600) * 1000).toISOString();
