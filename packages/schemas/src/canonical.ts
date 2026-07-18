@@ -132,10 +132,11 @@ export function parseDateLike(raw: unknown, dayFirst = false): string | null {
 /* Row schema                                                          */
 /* ------------------------------------------------------------------ */
 
-const trimmed = z
-  .union([z.string(), z.number()])
-  .transform((v) => String(v).trim())
-  .pipe(z.string().min(1));
+const requiredText = (label: string) =>
+  z
+    .union([z.string(), z.number()], { errorMap: () => ({ message: `${label} is required` }) })
+    .transform((v) => String(v).trim())
+    .pipe(z.string().min(1, `${label} is required`));
 
 const optionalTrimmed = z
   .union([z.string(), z.number(), z.null(), z.undefined()])
@@ -167,7 +168,7 @@ export function makeRowSchema(opts: { dayFirst?: boolean } = {}) {
   return z
     .object({
       transactionId: optionalTrimmed,
-      orderId: trimmed.describe('Order ID'),
+      orderId: requiredText('Order ID'),
       timestamp: z.unknown().transform((v, ctx) => {
         const iso = parseDateLike(v, opts.dayFirst);
         if (!iso) {
@@ -177,7 +178,7 @@ export function makeRowSchema(opts: { dayFirst?: boolean } = {}) {
         return iso;
       }),
       productId: optionalTrimmed,
-      productName: trimmed.describe('Product name'),
+      productName: requiredText('Product name'),
       category: optionalTrimmed,
       quantity: z.unknown().transform((v, ctx) => {
         const n = parseNumberLike(v);

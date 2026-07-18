@@ -43,7 +43,31 @@ a new report → open the report → add a note → export via print stylesheet.
   sibling button pattern), x-label collisions at 390px, and a customer model
   rewrite (explicit first purchases → ~30% new customers per window instead of
   a closed pool showing 98.7% repeat rate).
-## Stage 3 — Import journey (pending)
+## Stage 3 — Import journey ✅
+Both journeys driven end to end in Playwright with zero console errors:
+a messy file (6 engineered defects → all 6 caught with specific, named
+errors; reject CSV downloaded and verified; 14 clean rows imported; analytics
+opened scoped to the import; undo removed it) and a Shopify-style file
+(headers like “Order Number”, “Revenue”, “Customer Email” auto-mapped —
+including email→customerId; $1,234.56 money and M/D dates coerced; 60/60
+imported).
+
+- Four-step wizard: upload (drag/drop, delimiter sniffing) → map columns
+  (auto-suggestions from header aliases, per-field descriptions, sample
+  values, required-field gating, reusable mapping presets, day-first date
+  detection with manual override) → validate (chunked with progress; per-row
+  errors; downloadable reject file carrying original values + reasons) →
+  import (batched upload with progress; server re-validates with the same
+  shared schema).
+- Completion screen: counts, detected date range, jump to analytics scoped
+  to `importId`, one-click undo.
+- Data-quality page: duplicate transaction IDs, negative-net rows,
+  missing-field table with plain-language consequences, import history with
+  per-import analyze/undo.
+- Fixed en route: PapaParse worker mode is incompatible with callback
+  options (functions aren't structured-cloneable) — parse on main thread;
+  zod default "String must contain at least 1 character(s)" replaced with
+  named field messages.
 ## Stage 4 — Remaining analytics (pending)
 ## Stage 5 — Public product experience (pending)
 ## Stage 6 — Hardening (pending)
