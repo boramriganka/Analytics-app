@@ -1,2 +1,12 @@
-node_modules
-keys.js
+node_modules/
+dist/
+*.db
+*.db-*
+apps/api/data/
+.env
+*.local
+.DS_Store
+e2e/artifacts/
+playwright-report/
+test-results/
+*.tsbuildinfo
