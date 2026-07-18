@@ -68,6 +68,28 @@ imported).
   options (functions aren't structured-cloneable) — parse on main thread;
   zod default "String must contain at least 1 character(s)" replaced with
   named field messages.
-## Stage 4 — Remaining analytics (pending)
+## Stage 4 — Remaining analytics ✅
+All sections driven in Playwright with zero console errors; every page shares
+the one URL-persisted filter system, insight strip, accessible summaries,
+table alternatives and CSV export.
+
+- **Sales**: gross-vs-net lines (one axis, dashed neutral vs signal), a
+  “where gross became net” bridge (discounts/refunds as % of gross),
+  day-of-week and hour-of-day columns with peak emphasis + selective labels.
+- **Products**: top products with deltas, growing/declining movers (volume
+  floor to avoid noise), category performance, sortable 100-row table
+  (aria-sort), margin column only when cost data exists.
+- **Customers**: new-vs-returning split bars (counts and revenue, direct
+  labels), value-distribution bands, repeat-purchase rate, top customers,
+  honest empty state when customer IDs are missing. Cohort view deferred —
+  documented, not faked.
+- **Channels & stores**: contribution bars, cross-channel share table in
+  percentage points, per-channel trend lines (new `/analytics/timeseries-by`
+  endpoint, all-pairs-validated trio palette), store comparison.
+- **Refunds**: rate + value KPIs, refund-rate line, products driving refunds
+  (with volume floor), category/channel rate lists with an 8% attention
+  threshold.
+- **Explore**: breakdown playground over any dimension; **Settings**: guest →
+  private-workspace account creation, demo reset, sign-out.
 ## Stage 5 — Public product experience (pending)
 ## Stage 6 — Hardening (pending)

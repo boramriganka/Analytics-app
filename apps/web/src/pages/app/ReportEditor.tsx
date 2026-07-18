@@ -9,6 +9,7 @@ import { Button, ErrorState, Skeleton } from '../../design/primitives';
 import { useToast } from '../../design/overlay';
 import { RevenuePulse } from '../../features/charts/RevenuePulse';
 import { BreakdownBars } from '../../features/charts/BreakdownBars';
+import { TwoLineChart } from '../../features/charts/recharts';
 import { Metric } from '../../design/Metric';
 import { KPI_META } from '../../features/kpi/kpiMeta';
 import { InsightCard } from '../../features/insights/InsightCard';
@@ -240,8 +241,23 @@ function ChartBlock({ config }: { config: Record<string, unknown> }) {
   return (
     <figure>
       <figcaption className="mb-2 text-[15px] font-semibold text-ink">{title}</figcaption>
-      {kind === 'revenue-pulse' ? <PulseBlock query={query} /> : <BreakdownBlock query={query} dimension={String(config.dimension ?? 'category')} />}
+      {kind === 'revenue-pulse' ? (
+        <PulseBlock query={query} />
+      ) : kind === 'gross-net' ? (
+        <GrossNetBlock query={query} />
+      ) : (
+        <BreakdownBlock query={query} dimension={String(config.dimension ?? 'category')} />
+      )}
     </figure>
+  );
+}
+
+function GrossNetBlock({ query }: { query: string }) {
+  const ts = useTimeseries(query);
+  if (ts.isLoading) return <Skeleton className="h-64" />;
+  if (ts.isError || !ts.data) return <p className="text-sm text-ink-3">This chart could not be loaded.</p>;
+  return (
+    <TwoLineChart data={ts.data.series} xKey="period" aKey="grossSales" aLabel="Gross" bKey="netSales" bLabel="Net" height={240} />
   );
 }
 

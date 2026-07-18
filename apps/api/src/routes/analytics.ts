@@ -269,6 +269,55 @@ export function analyticsRouter(sqlite: Database.Database): Router {
     })
   );
 
+  /* --------------------------- timeseries by dimension ------------------------ */
+
+  const TimeseriesByQuery = z.object({
+    dimension: z.enum(['channel', 'category', 'store', 'country']),
+    limit: z.coerce.number().int().min(1).max(6).default(3),
+  });
+
+  r.get(
+    '/timeseries-by',
+    h((req, res) => {
+      const { f, range } = getFilters(req);
+      const { dimension, limit } = parse(TimeseriesByQuery, req.query, 'timeseries query');
+      const wsId = req.auth.wsId;
+      const granularity = granularityFor(range);
+      const col: Record<string, string> = {
+        channel: "COALESCE(channel, 'Unattributed')",
+        category: "COALESCE(category, 'Uncategorized')",
+        store: "COALESCE(store, 'No store')",
+        country: "COALESCE(country, 'Unknown')",
+      };
+      const dim = col[dimension]!;
+      const w = where(wsId, f, range);
+      const top = (
+        sqlite
+          .prepare(`SELECT ${dim} k FROM transactions WHERE ${w.sql} GROUP BY ${dim} ORDER BY SUM(net_sales) DESC LIMIT ?`)
+          .all(...w.params, limit) as { k: string }[]
+      ).map((x) => x.k);
+      const rows = sqlite
+        .prepare(
+          `SELECT ${bucketExpr(granularity)} period, ${dim} k, ROUND(SUM(net_sales), 2) net
+           FROM transactions WHERE ${w.sql} GROUP BY period, k ORDER BY period`
+        )
+        .all(...w.params) as { period: string; k: string; net: number }[];
+
+      const periods = [...new Set(rows.map((x) => x.period))].sort();
+      const series = periods.map((period) => {
+        const values: Record<string, number> = {};
+        let other = 0;
+        for (const row of rows) {
+          if (row.period !== period) continue;
+          if (top.includes(row.k)) values[row.k] = row.net;
+          else other += row.net;
+        }
+        return { period, values, other: Math.round(other * 100) / 100 };
+      });
+      res.json({ granularity, keys: top, series });
+    })
+  );
+
   /* -------------------------------- breakdown -------------------------------- */
 
   const BreakdownQuery = z.object({ dimension: z.enum(['category', 'product', 'channel', 'store', 'country', 'customer', 'import', 'dayOfWeek', 'hourOfDay']), limit: z.coerce.number().int().min(1).max(500).default(50) });
