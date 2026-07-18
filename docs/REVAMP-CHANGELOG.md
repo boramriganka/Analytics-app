@@ -1,0 +1,23 @@
+# Revamp changelog
+
+Honest, stage-by-stage record of what is complete, partial, or deferred.
+
+## Stage 0 — Audit ✅
+- Full repository + git-history inspection; every broken runtime path documented in `docs/LEGACY-AUDIT.md`.
+- Secrets scan of all history blobs: one real Google OAuth credential found in the 2021 history (`oath_keys/clentIdNsecret.txt`). Owner notified; **rotation still required**; history scrubbing is blocked in this environment and documented for the owner to run.
+- Legacy and interim states tagged locally (`legacy-prototype`, `interim-xorai`) and preserved in branch history.
+
+## Stage 1 — Safe foundation ✅
+- npm-workspaces monorepo: `packages/schemas`, `packages/analytics`, `apps/api`, `apps/web`. TypeScript strict + `noUncheckedIndexedAccess` everywhere; ESLint 9 flat config + Prettier.
+- `@signalroom/schemas`: canonical transaction fields with tolerant coercion (currency symbols, thousands separators, D/M vs M/D disambiguation, unix timestamps, parenthesized negatives), shared row schema used by both client validation and the server trust boundary, full API contracts. 10 unit tests.
+- `@signalroom/analytics`: period/comparison math, robust median/MAD anomaly detection with weekday conditioning (chosen after mean/σ provably could not detect the seeded spike — an outlier inflates its own σ; small groups have a hard z-max of (n−1)/√n), deterministic insight engine (7 rules: change decomposition with ≥35% dominance threshold, refund concentration, weekday streaks, returning-customer share, discount pressure, channel share shift, AOV decomposition — observations vs hypotheses distinguished). 18 unit tests with hand-computed expectations.
+- `apps/api`: Express + Drizzle/SQLite, tracked SQL migrations, structured errors + pino logging, JWT auth with guest demo sessions, demo reset, workspace scoping on every query. Deterministic seed (sizes 1k/25k/250k) with engineered, discoverable signals (Kitchen product surge, Bath refund spike, Saturday decline streak, flash-sale/outage anomalies pinned to fixed weekdays, growing marketplace share, deliberate data-quality quirks). 11 integration tests over a temp database, including the filter-consistency property (breakdown sums ≈ filtered totals).
+- `apps/web`: Vite + React 18 + TS strict scaffold; design tokens (warm paper / carbon ink / ultramarine signal; IBM Plex Sans + Mono, Fraunces for public display only; **all fonts self-hosted**); CVD-validated chart palette (6-slot adjacent-pairs + 3-slot all-pairs pass on the panel surface; sub-3:1 slots carry the direct-label/table relief rule); app shell with desktop sidebar, mobile bottom nav + “More” sheet, skip link, focus-visible styles, reduced-motion discipline; URL-persisted filter hook; React Query wiring with per-workspace+filter cache keys; route-level code splitting.
+- Legacy prototype and interim Xorai code fully removed (no localhost:5050, no config/keys.js, no dead Redux, no CSS-framework pileup).
+- Gates: `npm install && npm run seed && npm run dev` works; `npm test` → 39 passing; `npm run typecheck` clean; ESLint clean.
+
+## Stage 2 — Vertical slice (in progress)
+## Stage 3 — Import journey (pending)
+## Stage 4 — Remaining analytics (pending)
+## Stage 5 — Public product experience (pending)
+## Stage 6 — Hardening (pending)

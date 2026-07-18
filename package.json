@@ -1,16 +1,30 @@
 {
-  "name": "xorai",
-  "version": "2.0.0",
+  "name": "signalroom",
+  "version": "0.1.0",
   "private": true,
-  "description": "Xorai — full-stack retail analytics dashboard (Express + SQLite API, React + Tailwind client)",
+  "description": "Signalroom — Retail Intelligence Studio. Import sales data, understand what changed, produce a report.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "setup": "npm install --prefix server && npm install --prefix client",
-    "seed": "npm run seed --prefix server",
-    "dev": "concurrently -n api,web -c yellow,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "build": "npm run build --prefix client",
-    "start": "npm start --prefix server"
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm run dev -w @signalroom/api\" \"npm run dev -w @signalroom/web\"",
+    "seed": "npm run seed -w @signalroom/api",
+    "build": "npm run build -w @signalroom/web",
+    "start": "npm run start -w @signalroom/api",
+    "test": "npm run test -w @signalroom/schemas -w @signalroom/analytics -w @signalroom/api --if-present",
+    "e2e": "playwright test -c e2e/playwright.config.ts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.49.1",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
   }
 }

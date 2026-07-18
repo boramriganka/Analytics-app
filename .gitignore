@@ -1,7 +1,12 @@
 node_modules/
 dist/
-server/data/
+*.db
+*.db-*
+apps/api/data/
 .env
 *.local
 .DS_Store
-dist-static/
+e2e/artifacts/
+playwright-report/
+test-results/
+*.tsbuildinfo
